@@ -1,0 +1,13 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<h2>ユーザー一覧</h2>
+
+{% for user in users %}
+    <div class="post-card">
+        <span class="post-user">{{ user.name }}</span>
+        <p>{{ user.email }}</p>
+        <span class="post-date">登録日: {{ user.created_at|date:"Y/m/d" }}</span>
+    </div>
+{% endfor %}
+{% endblock %}
