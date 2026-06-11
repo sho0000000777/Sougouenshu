@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ショッピングサイト</title>
+</head>
+<body>
+
+    <h1>商品検索</h1>
+
+    <!-- ログイン / ログアウト -->
+    {% if login_user %}
+        <p>ようこそ  {{ login_user.name }} さん　<a href="{% url 'app:logout' %}">ログアウト</a></p>
+    {% else %}
+        <p><a href="{% url 'app:login' %}">ログイン</a></p>
+    {% endif %}
+
+    <hr>
+
+    <!-- 検索フォーム -->
+    <form method="GET" action="{% url 'app:search' %}">
+
+        <!-- カテゴリ -->
+        <label for="category">カテゴリ：</label>
+        <select name="category" id="category">
+            <option value="">すべて</option>
+            {% for category in categories %}
+                <option value="{{ category.category_id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- キーワード -->
+        <label for="keyword">キーワード：</label>
+        <input type="text" name="keyword" id="keyword">
+
+        <!-- 検索ボタン -->
+        <button type="submit">検索</button>
+
+    </form>
+
+</body>
+</html>
