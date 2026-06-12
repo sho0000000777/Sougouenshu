@@ -2,12 +2,18 @@ from django import forms
 from app.models import User
 
 
+from django import forms
+from app.models import User
+
 class UserCreateForm(forms.ModelForm):
-    """会員登録フォーム"""
+    password_confirm = forms.CharField(
+        label="パスワード（確認）",
+        widget=forms.PasswordInput()
+    )
 
     class Meta:
         model = User
-        fields = ["user_id", "password", "name", "address"]
+        fields = ["user_id", "password", "password_confirm", "name", "address"]
         widgets = {
             "password": forms.PasswordInput(),
         }
@@ -18,11 +24,19 @@ class UserCreateForm(forms.ModelForm):
             "address": "ご住所",
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password_confirm = cleaned_data.get("password_confirm")
+        if password and password_confirm and password != password_confirm:
+            raise forms.ValidationError("パスワードが一致しません")
+        return cleaned_data
+
 
 class LoginForm(forms.Form):
     """ログインフォーム（DBと連動しないのでforms.Form）"""
 
-    name = forms.CharField(label="ユーザー名", max_length=100)
+    user_id = forms.CharField(label="会員ID", max_length=100)
     password = forms.CharField(
         label="パスワード",
         widget=forms.PasswordInput(),

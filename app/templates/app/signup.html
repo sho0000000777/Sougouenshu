@@ -1,8 +1,10 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>会員登録</title>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
 </head>
 <body>
 
@@ -15,6 +17,8 @@
 </form>
 
 <p><a href="{% url 'app:login' %}">すでにアカウントをお持ちの方はこちら</a></p>
+
+<p><a href="{% url 'app:index' %}">商品検索ページへ</a></p>
 
 </body>
 </html>

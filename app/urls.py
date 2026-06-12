@@ -8,8 +8,8 @@ urlpatterns = [
     path("signup/", views.UserCreate.as_view(), name="signup"),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
-    # path("timeline/", views.timeline_view, name="timeline"),
-    path("users/", views.user_list_view, name="snsuser_list"),
     path("search/", views.search_view, name="search"),
-    # path("like/<int:post_id>/", views.like_view, name="like"),
+    path('item/<int:item_id>/', views.itemdetail_view, name='item_detail'),
+    path('cart/insert/', views.cart_insert_view, name='cart_insert'),
+    path("cart/", views.cart_view, name="cart"),
 ]

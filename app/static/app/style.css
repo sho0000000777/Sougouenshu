@@ -1,0 +1,84 @@
+
+body {
+    font-family: sans-serif;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+h1, h2 {
+    border-bottom: 2px solid #333;
+    padding-bottom: 8px;
+}
+
+hr {
+    margin: 20px 0;
+}
+
+a {
+    color: #0066cc;
+}
+
+/* ===== フォーム（表っぽく整列） ===== */
+form p {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+}
+
+form p label {
+    width: 180px;
+    padding: 10px;
+    background-color: #e0e8f0;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+form p input,
+form p select,
+form p textarea {
+    flex: 1;
+    padding: 8px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+}
+
+/* ===== ボタン ===== */
+button {
+    margin-top: 16px;
+    padding: 10px 24px;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #004999;
+}
+
+/* ===== エラー表示 ===== */
+.error,
+.errorlist {
+    color: red;
+    font-size: 14px;
+}
+
+/* ===== 検索フォーム（横並び） ===== */
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0;
+}
+
+.search-form label {
+    font-weight: bold;
+}
+
+.search-form select,
+.search-form input {
+    padding: 6px;
+    border: 1px solid #ccc;
+}
