@@ -1,0 +1,40 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ショッピングカート</title>
+    <link rel="stylesheet" href="{% static 'app/product.css' %}">
+</head>
+<body>
+
+<h2>ショッピングカート内の商品一覧</h2>
+
+{% if itemsincart %}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>商品名</th>
+            <th>色</th>
+            <th>メーカー</th>
+            <th>価格</th>
+            <th>数量</th>
+            
+        </tr>
+        {% for item in itemsincart %}
+        <tr>
+            <td>{{ item.item.name }}</td>
+            <td>{{ item.item.color }}</td>
+            <td>{{ item.item.manufacturer }}</td>
+            <td>{{ item.item.price }}円</td>
+            <td>{{ item.amount}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>該当する商品がありません</p>
+{% endif %}
+
+<p><a href="{% url 'app:index' %}">商品検索ページへ戻る</a></p>
+
+</body>
+</html>

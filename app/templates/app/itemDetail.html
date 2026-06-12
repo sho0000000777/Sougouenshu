@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>商品詳細</title>
+    <link rel="stylesheet" href="{% static 'app/product.css' %}">
+</head>
+<body>
+
+<h2>商品の詳細表示</h2>
+
+<table>
+    <tr><th>商品名</th><td>{{ item.name }}</td></tr>
+    <tr><th>色</th><td>{{ item.color }}</td></tr>
+    <tr><th>メーカー</th><td>{{ item.manufacturer }}</td></tr>
+    <tr><th>価格</th><td>{{ item.price }}円</td></tr>
+    <tr><th>在庫数</th><td>{{ item.stock }}</td></tr>
+</table>
+
+{% if login_user %}
+    <form method="post" action="{% url 'app:cart_insert' %}">
+        {% csrf_token %}
+        <input type="hidden" name="item_id" value="{{ item.item_id }}">
+
+        <label for="amount">個数：</label>
+        <select name="amount" id="amount">
+            {% for i in amount_range %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">ショッピングカートに入れる</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'app:login' %}">ログインしてカートに入れる</a></p>
+{% endif %}
+
+<p><a href="{% url 'app:index' %}">商品検索ページへ</a></p>
+
+</body>
+</html>

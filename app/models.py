@@ -35,8 +35,8 @@ class Itemincart(models.Model):
         db_table = "shopping_itemsincart"
     amount = models.IntegerField(verbose_name="数量")
     booked_date = models.DateTimeField(verbose_name="登録日", auto_now_add=True)
-    item = models.ForeignKey(Item, verbose_name="商品", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, verbose_name="会員", on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, verbose_name="商品ID", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name="会員ID", on_delete=models.CASCADE)
 
 
 class Purchase(models.Model):
