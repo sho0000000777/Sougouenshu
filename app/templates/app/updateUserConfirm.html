@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>会員情報変更確認</title>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
+<body>
+
+<h2>会員情報変更確認</h2>
+
+<p>以下の内容で更新しますか？</p>
+
+<table>
+    <tr>
+        <th>会員ID</th>
+        <td>{{ data.user_id }}</td>
+    </tr>
+    <tr>
+        <th>お名前</th>
+        <td>{{ data.name }}</td>
+    </tr>
+    <tr>
+        <th>ご住所</th>
+        <td>{{ data.address }}</td>
+    </tr>
+    <tr>
+        <th>新しいパスワード</th>
+        <td>
+            {% if data.new_password %}
+                ********
+            {% else %}
+                変更しない
+            {% endif %}
+        </td>
+    </tr>
+</table>
+
+<form method="post" action="{% url 'app:user_update_complete' %}">
+    {% csrf_token %}
+    <button type="submit">この内容で更新する</button>
+</form>
+
+<p><a href="{% url 'app:user_update' %}">入力画面に戻る</a></p>
+
+</body>
+</html>
