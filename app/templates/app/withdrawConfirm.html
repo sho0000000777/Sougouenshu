@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>退会確認</title>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
+<body>
+
+<h2>退会確認</h2>
+
+<p>本当に退会しますか？</p>
+<p>退会すると、ログインできなくなります。</p>
+
+<table>
+    <tr>
+        <th>会員ID</th>
+        <td>{{ login_user.user_id }}</td>
+    </tr>
+    <tr>
+        <th>お名前</th>
+        <td>{{ login_user.name }}</td>
+    </tr>
+    <tr>
+        <th>ご住所</th>
+        <td>{{ login_user.address }}</td>
+    </tr>
+</table>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">退会する</button>
+</form>
+
+<p><a href="{% url 'app:userinfo' %}">会員情報確認へ戻る</a></p>
+<p><a href="{% url 'app:index' %}">トップへ戻る</a></p>
+
+</body>
+</html>

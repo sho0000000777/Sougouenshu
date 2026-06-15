@@ -12,9 +12,9 @@
 
     <!-- ログイン / ログアウト -->
     {% if login_user %}
-        <p>ようこそ  {{ login_user.name }} さん　<a href="{% url 'app:logout' %}">ログアウト</a></p>
+        <p>ようこそ  {{ login_user.name }} さん　<a href="{% url 'app:logout' %}">ログアウト</a>　<a href="{% url 'app:cart' %}">ショッピングカートを見る</a></p>
     {% else %}
-        <p><a href="{% url 'app:login' %}">ログイン</a></p>
+        <p><a href="{% url 'app:login' %}">ログイン</a> <a href="{% url 'app:login' %}">ショッピングカートを見る</a></p>
     {% endif %}
 
     <hr>
@@ -39,6 +39,11 @@
         <button type="submit">検索</button>
 
     </form>
+
+    <hr>
+
+    <p><a href="{% url 'app:userinfo' %}">会員情報の確認</a></p>
+    <p><a href="{% url 'app:login' %}">会員情報の変更</a></p>
 
 </body>
 </html>

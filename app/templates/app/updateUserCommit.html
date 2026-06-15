@@ -3,17 +3,16 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>会員登録確認</title>
+    <title>会員情報の更新完了</title>
     <link rel="stylesheet" href="{% static 'app/style.css' %}">
 </head>
 <body>
 
-<h2>会員登録確認</h2>
-
+<h2>以下の会員情報で更新しました。</h2>
 <table>
     <tr>
         <th>会員ID</th>
-        <td>{{ data.user_id }}</td>
+        <td>{{ login_user.user_id }}</td>
     </tr>
     <tr>
         <th>パスワード</th>
@@ -21,20 +20,16 @@
     </tr>
     <tr>
         <th>お名前</th>
-        <td>{{ data.name }}</td>
+        <td>{{ login_user.name }}</td>
     </tr>
     <tr>
         <th>ご住所</th>
-        <td>{{ data.address }}</td>
+        <td>{{ login_user.address }}</td>
     </tr>
 </table>
 
-<form method="post" action="{% url 'app:signup_complete' %}">
-    {% csrf_token %}
-    <button type="submit">この内容で登録する</button>
-</form>
-
-<p><a href="{% url 'app:signup' %}">入力画面に戻る</a></p>
+<p><a href="{% url 'app:userinfo' %}">会員情報確認へ戻る</a></p>
+<p><a href="{% url 'app:index' %}">トップへ戻る</a></p>
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -13,11 +13,10 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">登録する</button>
+    <button type="submit">登録確認</button>
 </form>
 
 <p><a href="{% url 'app:login' %}">すでにアカウントをお持ちの方はこちら</a></p>
-
 <p><a href="{% url 'app:index' %}">商品検索ページへ</a></p>
 
 </body>

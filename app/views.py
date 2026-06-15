@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView
+from django.views.generic.edit import UpdateView
 from app.models import User, Category, Item, Category, Itemincart
 from django.urls import reverse_lazy
-from .forms import UserCreateForm, LoginForm
+from .forms import UserCreateForm, LoginForm, UserUpdateForm
 from django.contrib.auth.hashers import make_password, check_password
+from django.views import View
 
 # Create your views here.
 def index(request):
@@ -14,16 +16,53 @@ def index(request):
     return render(request, "app/base.html", {"categories": categories,'login_user': login_user})
 
 
-class UserCreate(CreateView):
-    model = User
-    form_class = UserCreateForm
+class UserCreateView(View):
     template_name = "app/signup.html"
-    success_url = reverse_lazy("app:login")
+    confirm_template_name = "app/registerUserConfirm.html"
 
-    def form_valid(self, form):
-        # パスワードをハッシュ化して保存
-        form.instance.password = make_password(form.cleaned_data["password"])
-        return super().form_valid(form)
+    def get(self, request):
+        form = UserCreateForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            request.session["signup_data"] = {
+                "user_id": form.cleaned_data["user_id"],
+                "password": form.cleaned_data["password"],
+                "name": form.cleaned_data["name"],
+                "address": form.cleaned_data["address"],
+            }
+
+            return render(request, self.confirm_template_name, {
+                "data": request.session["signup_data"]
+            })
+
+        return render(request, self.template_name, {"form": form})
+
+
+class UserCreateCompleteView(View):
+    def post(self, request):
+        signup_data = request.session.get("signup_data")
+
+        if not signup_data:
+            return redirect("app:signup")
+
+        user = User(
+            user_id=signup_data["user_id"],
+            password=make_password(signup_data["password"]),
+            name=signup_data["name"],
+            address=signup_data["address"],
+        )
+
+        user.save()
+
+        # 登録後はセッションを消す
+        del request.session["signup_data"]
+
+        return render(request, "app/registerUserCommit.html", {
+            "name": user.name,
+        })
 
 
 def login_view(request):
@@ -65,7 +104,6 @@ def search_view(request):
     items = Item.objects.all()
     category_name = 'すべて'
 
-
     if category_id:
         items = items.filter(category_id=category_id)
         category = Category.objects.filter(category_id=category_id).first()
@@ -83,7 +121,7 @@ def search_view(request):
 def itemdetail_view(request, item_id):
     item = Item.objects.filter(item_id=item_id).first()
     login_user = None
-    if request.session.get("is_login"):
+    if request.session.get("is_login"):#ログイン中かどうかで処理が分岐
         login_user = User.objects.filter(user_id=request.session['login_user_id']).first()
 
     if not item:
@@ -103,13 +141,13 @@ def cart_insert_view(request):
         amount = request.POST.get("amount")
         amount = int(amount)
 
-        item = Item.objects.filter(item_id=item_id).first()
+        item = Item.objects.filter(item_id=item_id).first()#挿入する商品を検索
 
-        login_user_id = request.session.get("login_user_id")
+        login_user_id = request.session.get("login_user_id")#ログイン中のユーザID取得
         
-        user = User.objects.filter(user_id=login_user_id).first()
+        user = User.objects.filter(user_id=login_user_id).first()#ユーザを調べる
 
-        cart_item = Itemincart.objects.filter(user=user, item=item).first()
+        cart_item = Itemincart.objects.filter(user=user, item=item).first()#ユーザとアイテムから現在のカートに該当商品があるか検索
 
         if cart_item:
             cart_item.amount += amount
@@ -129,7 +167,107 @@ def cart_view(request):
     user = User.objects.filter(user_id=login_user_id).first()
 
     itemsincart = Itemincart.objects.filter(user=user)
+    sum_price = 0
+    for item in itemsincart:
+        sum_price += item.item.price * item.amount
 
     return render(request, "app/cart.html", {
         "itemsincart": itemsincart,
+        "sum_price": sum_price,
     })
+
+def userinfo_view(request):
+    if request.session.get("is_login"):#ログイン中かどうか
+        login_user = User.objects.filter(user_id=request.session['login_user_id']).first()
+    return render(request, "app/userInfo.html", {
+        "login_user":login_user
+    })
+
+
+class UserUpdateView(View):
+    template_name = "app/updateUser.html"
+    confirm_template_name = "app/updateUserConfirm.html"
+
+    def get(self, request):
+        login_user_id = request.session.get("login_user_id")
+        user = User.objects.filter(user_id=login_user_id).first()
+        form = UserUpdateForm(instance=user)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        login_user_id = request.session.get("login_user_id")
+        user = User.objects.filter(user_id=login_user_id).first()
+        form = UserUpdateForm(request.POST, instance=user)
+
+        if form.is_valid():
+            request.session["user_update_data"] = {
+                "user_id": form.cleaned_data["user_id"],
+                "name": form.cleaned_data["name"],
+                "address": form.cleaned_data["address"],
+                "new_password": form.cleaned_data["new_password"],
+            }
+
+            return render(request, self.confirm_template_name, {
+                "data": request.session["user_update_data"]
+            })
+
+        return render(request, self.template_name, {"form": form})
+
+
+class UserUpdateCompleteView(View):
+    def post(self, request):
+        login_user_id = request.session.get("login_user_id")
+        update_data = request.session.get("user_update_data")
+        user = User.objects.filter(user_id=login_user_id).first()
+        user.name = update_data["name"]
+        user.address = update_data["address"]
+
+        if update_data["new_password"]:
+            user.password = make_password(update_data["new_password"])
+
+        user.save()
+
+        # セッションの表示用情報も更新
+        request.session["login_user_name"] = user.name
+
+        # 使い終わった一時データは消す
+        del request.session["user_update_data"]
+
+        return redirect("app:user_update_done")
+
+
+class UserUpdateDoneView(View):
+    def get(self, request):
+        login_user = User.objects.filter(user_id=request.session['login_user_id']).first()
+        return render(request, "app/updateUserCommit.html",{
+            "login_user": login_user,
+        })
+
+
+class UserDeleteView(View):
+    template_name = "app/withdrawConfirm.html"
+
+    def get(self, request):
+        login_user_id = request.session.get("login_user_id")
+
+        user = User.objects.filter(user_id=login_user_id).first()
+
+        return render(request, self.template_name, {
+            "login_user": user,
+        })
+
+    def post(self, request):
+        login_user_id = request.session.get("login_user_id")
+
+        user = User.objects.filter(user_id=login_user_id).first()
+
+        user.delete()
+
+        request.session.flush()
+
+        return redirect("app:user_delete_done")
+
+
+class UserDeleteDoneView(View):
+    def get(self, request):
+        return render(request, "app/withdrawCommit.html")

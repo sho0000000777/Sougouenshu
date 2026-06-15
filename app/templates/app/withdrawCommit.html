@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>退会完了</title>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
+<body>
+
+<h2>退会完了</h2>
+
+<p>退会処理が完了しました。</p>
+<p>ご利用ありがとうございました。</p>
+
+<p><a href="{% url 'app:index' %}">トップページへ</a></p>
+
+</body>
+</html>
